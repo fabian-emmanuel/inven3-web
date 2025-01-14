@@ -3,143 +3,191 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Upload } from 'lucide-react'
+import { User, Mail, Lock, Building, Upload } from 'lucide-react'
 
 export function SignUpForm() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [companyName, setCompanyName] = useState('')
-  const [logo, setLogo] = useState<File | null>(null)
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    companyName: ''
+  })
+  const [companyLogo, setCompanyLogo] = useState<File | null>(null)
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Signing up with:', { name, email, password, companyName, logo })
+    console.log('Signing up with:', { ...formData, companyLogo })
     navigate('/dashboard')
   }
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setLogo(e.target.files[0])
+      setCompanyLogo(e.target.files[0])
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-      <div className="space-y-4">
-        <div className="relative">
-          <Input
-            id="name"
-            name="name"
-            type="text"
-            required
-            className="block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 peer pt-6"
-            placeholder=" "
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <Label
-            htmlFor="name"
-            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
-          >
-            Name
-          </Label>
-        </div>
-        <div className="relative">
-          <Input
-            id="email-address"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            className="block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 peer pt-6"
-            placeholder=" "
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Label
-            htmlFor="email-address"
-            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
-          >
-            Email address
-          </Label>
-        </div>
-        <div className="relative">
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            required
-            className="block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 peer pt-6"
-            placeholder=" "
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Label
-            htmlFor="password"
-            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
-          >
-            Password
-          </Label>
-        </div>
-        <div className="relative">
-          <Input
-            id="company-name"
-            name="companyName"
-            type="text"
-            required
-            className="block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 peer pt-6"
-            placeholder=" "
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-          />
-          <Label
-            htmlFor="company-name"
-            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
-          >
-            Company Name
-          </Label>
-        </div>
-        <div className="relative">
-          <Input
-            id="logo"
-            name="logo"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleLogoChange}
-          />
-          <Label
-            htmlFor="logo"
-            className="flex items-center justify-center w-full px-4 py-3 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:border-blue-500 focus:outline-none"
-          >
-            <div className="flex items-center">
-              <Upload className="w-6 h-6 mr-2 text-gray-400" />
-              <span className="text-sm text-gray-600">
-                {logo ? logo.name : 'Upload Company Logo'}
-              </span>
-            </div>
-          </Label>
-        </div>
-      </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
 
-      <div className="flex items-center justify-between">
-        <div className="text-sm">
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Already have an account? Log in
+        <div className="space-y-4">
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5"/>
+            <Input
+                name="firstName"
+                type="text"
+                required
+                className="pl-10 py-6 bg-gray-50"
+                placeholder="First Name"
+                value={formData.firstName}
+                onChange={handleChange}
+            />
+          </div>
+
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5"/>
+            <Input
+                name="lastName"
+                type="text"
+                required
+                className="pl-10 py-6 bg-gray-50"
+                placeholder="Last Name"
+                value={formData.lastName}
+                onChange={handleChange}
+            />
+          </div>
+
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5"/>
+            <Input
+                name="email"
+                type="email"
+                required
+                className="pl-10 py-6 bg-gray-50"
+                placeholder="Email Address"
+                value={formData.email}
+                onChange={handleChange}
+            />
+          </div>
+
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5"/>
+            <Input
+                name="password"
+                type="password"
+                required
+                className="pl-10 py-6 bg-gray-50"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+            />
+          </div>
+
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5"/>
+            <Input
+                name="confirmPassword"
+                type="password"
+                required
+                className="pl-10 py-6 bg-gray-50"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+            />
+          </div>
+
+          <div className="relative">
+            <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5"/>
+            <Input
+                name="companyName"
+                type="text"
+                required
+                className="pl-10 py-6 bg-gray-50"
+                placeholder="Company Name"
+                value={formData.companyName}
+                onChange={handleChange}
+            />
+          </div>
+
+          <div className="relative">
+            <Upload className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5"/>
+            <label htmlFor="companyLogo" className="block">
+              <span className="sr-only">Upload Company Logo</span>
+              <div className="flex items-center pl-10 py-6 bg-gray-50 rounded-md border border-gray-300">
+              <span className="text-sm text-gray-500">
+                {companyLogo ? companyLogo.name : "Upload Company Logo"}
+              </span>
+                <input
+                    id="companyLogo"
+                    name="companyLogo"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                />
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <Button type="submit" className="w-full py-6 bg-gray-900 hover:bg-gray-800">
+          Sign Up
+        </Button>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">OR</span>
+          </div>
+        </div>
+
+        <Button
+            type="button"
+            variant="outline"
+            className="w-full py-6 flex items-center justify-center space-x-2"
+            onClick={() => console.log('Google sign up')}
+        >
+          <svg className="h-5 w-5" viewBox="0 0 24 24">
+            <path
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                fill="#4285F4"
+            />
+            <path
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                fill="#34A853"
+            />
+            <path
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                fill="#FBBC05"
+            />
+            <path
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                fill="#EA4335"
+            />
+          </svg>
+          <span>Continue with Google</span>
+        </Button>
+
+        <div className="text-center mt-6">
+          <span className="text-sm text-gray-600">Already have an account? </span>
+          <Link
+              to="/login"
+              className="text-sm text-blue-600 hover:text-blue-500 font-medium"
+          >
+            Log in here
           </Link>
         </div>
-      </div>
-
-      <div>
-        <Button type="submit" className="w-full">
-          Sign up
-        </Button>
-      </div>
-    </form>
+      </form>
   )
 }
-
